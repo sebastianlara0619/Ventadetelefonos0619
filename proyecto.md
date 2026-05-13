@@ -1,24 +1,28 @@
-Como DBA del proyecto **MySaveCar**, aquí está el modelo completo de entidades que necesitas. Te lo presento en capas lógicas para que sea mantenible y escalable.Puedes hacer clic en cualquier entidad para que te la explique a detalle. Aquí el resumen de los 7 dominios:
+## Prompt en Claude
+Actúa como un administrador de base de datos: proyecto empresa de Venta de Télefonos, que entidades se necesitan para su gestión
+muestrame graficamente las tablas con todo y sus relaciones
+Las entidades con sus atributos y tipos de forma de tabla
+crear un script en SQL
 
-<img width="750" height="578" alt="image" src="https://github.com/user-attachments/assets/867f079c-56ec-42b8-bd0b-79a3d92b5854" />
-<img width="818" height="584" alt="image" src="https://github.com/user-attachments/assets/d2be65c3-1e3a-4b57-8460-19233779be9d" />
-<img width="828" height="250" alt="image" src="https://github.com/user-attachments/assets/8d19b5e4-e6b2-4e66-a3b0-7adc97977324" />
+## Respuesta
+Perfecto. Voy a crear el diagrama ERD con mermaid.js y las tablas de atributos, más el script SQL completo.Ahora las tablas de atributos con tipos de datos:Ahora el script SQL completo:Aquí tienes el sistema completo. Un resumen de las **12 entidades** diseñadas y su lógica:
+<img width="1029" height="556" alt="image" src="https://github.com/user-attachments/assets/e45172f3-3469-489c-a8c8-e41ab27e67bf" />
+<img width="750" height="669" alt="image" src="https://github.com/user-attachments/assets/41a004f2-11ab-46e3-8f21-07970038e0b9" />
+<img width="747" height="735" alt="image" src="https://github.com/user-attachments/assets/09a47b51-9251-438e-a305-7d170ade8069" />
+<img width="760" height="297" alt="image" src="https://github.com/user-attachments/assets/8fa8bd83-d9a3-415e-a798-f947c0ef5f32" />
 
 
+**Catálogo del producto**
+- `categoria` y `marca` clasifican cada teléfono. `telefono` centraliza el inventario con precio y stock.
+- `garantia` tiene relación 1-a-1 con teléfono (cada modelo tiene sus propios términos).
 
+**Ciclo de venta**
+- `cliente` genera un `pedido`, atendido por un `empleado`.
+- `detalle_pedido` es la tabla puente que permite vender varios modelos en un mismo pedido.
+- `devolucion` registra devoluciones contra un pedido específico.
 
-**Usuarios y perfiles** — cubre la autenticación, los roles (comprador, vendedor particular, agencia, admin), y la gestión de dispositivos para notificaciones push. El vendedor tiene su propia entidad con datos de KYC y reputación.
+**Abastecimiento**
+- `proveedor` alimenta el inventario mediante `compra_proveedor`, que un empleado gestiona.
+- `detalle_compra` registra qué modelos y a qué costo llegaron.
 
-**Catálogo de productos** — es el corazón del sistema. Se divide en tres tipos de ítem: vehículos (con VIN, historial, specs), insumos/accesorios (consumibles) y refacciones (con tabla de compatibilidad make/model/year). Las publicaciones son una capa encima de los productos que controla precio, visibilidad y estado.
-
-**Comercio y transacciones** — gestiona el flujo completo desde carrito hasta orden. La entidad `Oferta/Negociación` es clave para la venta de autos (donde el precio no es fijo). Los cupones tienen sus propias reglas de negocio.
-
-**Pagos y finanzas** — separado del comercio intencionalmente. Incluye `Factura/CFDI` para el mercado mexicano y `Comisión` para que la plataforma registre su corte por cada venta.
-
-**Logística y envíos** — aplica principalmente a insumos y refacciones. Los autos tienen su propio flujo con `Cita de inspección` (necesaria antes de la transferencia).
-
-**Comunicación y contenido** — el chat comprador-vendedor es fundamental para negociar autos. Las reseñas son bidireccionales (comprador califica vendedor y viceversa).
-
-**Operaciones y administración** — sin esto no hay backoffice saludable. `Auditoría` registra cada cambio crítico. `Búsqueda guardada` permite alertas tipo "avísame cuando haya una Hilux 2020 por menos de $300k".
-
-¿Quieres que profundice en algún dominio específico, te genere el DDL (SQL), o diseñemos las relaciones y cardinalidades entre entidades?
+El script incluye además **índices** para consultas frecuentes (estado de pedidos, fecha, modelo) y **3 vistas** listas para usar: ventas por empleado, inventario actual y detalle completo de pedidos.
